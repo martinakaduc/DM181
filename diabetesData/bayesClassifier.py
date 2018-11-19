@@ -89,7 +89,7 @@ class gaussianBayes(bayesClassic):
         self.y_proba = []
 
     def fit(self, X, y):
-        self.X_train = X.flatten()
+        self.X_train = np.array([x.flatten() for x in X])
         self.y_train = y
 
         #calculate probability of each y (P(y))
