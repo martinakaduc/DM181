@@ -18,6 +18,7 @@ class bayesClassic(object):
         self.sample_size = self.X_train.shape[-1] #equivalent sample size (column:-1, row:0)
 
         #calculate probability of each y (P(y))
+        print('Calculating labels\'s probability')
         for y in self.y_train:
             if (y not in self.y_value):
                 self.y_value.append(y)
@@ -26,6 +27,7 @@ class bayesClassic(object):
         self.y_proba = [k / sum(self.y_proba) for k in self.y_proba]
 
         #calculate probability of each feature if each y (P((a-X) | y))
+        print('Calculating each feature\'s probability')
         for y in range(len(self.y_value)):
             self.X_proba.append([])
             for X_v in range(self.sample_size):
@@ -43,13 +45,13 @@ class bayesClassic(object):
                     self.X_value.append(self.X_valueEachFeature)
 
     def predict(self, X_predict):
-        self.X_predict = X_predict
+        self.X_predict = X_predict.flatten()
         self.y_predict = []
         for y in range(len(self.y_value)):
             self.y_predict.append(self.y_proba[y])
             for X in range(self.X_predict.shape[-1]):
-                if (self.X_predict[0][X] in self.X_value[X]):
-                    self.y_predict[y] *= self.X_proba[y][X][self.X_value[X].index(self.X_predict[0][X])]
+                if (self.X_predict[X] in self.X_value[X]):
+                    self.y_predict[y] *= self.X_proba[y][X][self.X_value[X].index(self.X_predict[X])]
         return (self.y_value[np.argmax(self.y_predict)])
 
     def predictProbability(self):
@@ -112,15 +114,15 @@ class gaussianBayes(bayesClassic):
                 self.X_stDev[y].append(standardDeviation(self.X_trainEachY))
 
     def predict(self, X_predict):
-        self.X_predict = X_predict
+        self.X_predict = X_predict.flatten()
         self.y_predict = []
         for y in range(len(self.y_value)):
             self.y_predict.append(self.y_proba[y])
             for X in range(self.X_predict.shape[-1]):
                 if (self.X_stDev[y][X] != 0):
-                    self.y_predict[y] *= (np.exp(-(self.X_predict[0][X] - self.X_mean[y][X])**2 / (2*self.X_stDev[y][X]**2)) / (np.sqrt(2*np.pi)*self.X_stDev[y][X]))
+                    self.y_predict[y] *= (np.exp(-(self.X_predict[X] - self.X_mean[y][X])**2 / (2*self.X_stDev[y][X]**2)) / (np.sqrt(2*np.pi)*self.X_stDev[y][X]))
                 else:
-                    if ((self.X_predict[0][X] - self.X_mean[y][X]) == 0):
+                    if ((self.X_predict[X] - self.X_mean[y][X]) == 0):
                         self.y_predict[y] *= self.X_train.shape[0]
                     else:
                         self.y_predict[y] *= 0
