@@ -13,7 +13,7 @@ class bayesClassic(object):
         self.X_proba = []
 
     def fit(self, X, y):
-        self.X_train = X
+        self.X_train = np.array([x.flatten() for x in X])
         self.y_train = y
         self.sample_size = self.X_train.shape[-1] #equivalent sample size (column:-1, row:0)
 
@@ -89,7 +89,7 @@ class gaussianBayes(bayesClassic):
         self.y_proba = []
 
     def fit(self, X, y):
-        self.X_train = X
+        self.X_train = X.flatten()
         self.y_train = y
 
         #calculate probability of each y (P(y))
