@@ -19,26 +19,30 @@ class bayesClassic(object):
 
         #calculate probability of each y (P(y))
         print('Calculating labels\'s probability')
-        for y in self.y_train:
-            if (y not in self.y_value):
-                self.y_value.append(y)
+        for y in range(self.y_train.shape[0]):
+            if (self.y_train[y] not in self.y_value):
+                self.y_value.append(self.y_train[y])
                 self.y_proba.append(0)
-            self.y_proba[self.y_value.index(y)] += 1
+            self.y_proba[self.y_value.index(self.y_train[y])] += 1
+            print('Process: %s' % (100*(y+1)/self.y_train.shape[0]))
         self.y_proba = [k / sum(self.y_proba) for k in self.y_proba]
 
         #calculate probability of each feature if each y (P((a-X) | y))
         print('Calculating each feature\'s probability')
+        percent = 0
         for y in range(len(self.y_value)):
             self.X_proba.append([])
             for X_v in range(self.sample_size):
                 self.X_valueEachFeature = []
                 self.X_count = []
-                for X_h in range(self.X_train[:,X_v].shape[-1]):
+                for X_h in range(self.X_train.shape[0]):
                     if (self.X_train[X_h,X_v] not in self.X_valueEachFeature):
                         self.X_valueEachFeature.append(self.X_train[X_h,X_v])
                         self.X_count.append(0)
                     if (self.y_train[X_h] == self.y_value[y]):
                         self.X_count[self.X_valueEachFeature.index(self.X_train[X_h,X_v])] += 1
+                    percent += (100 / (len(self.y_value) * self.sample_size * self.X_train.shape[0]))
+                    print('Process: %s' % percent)
                 self.X_proba[y].append([(X + self.fit_prior*self.sample_size) / (self.sample_size + self.y_proba[y]*self.y_train.shape[-1])
                                 for X in self.X_count])
                 if (y == 0):
@@ -95,13 +99,17 @@ class gaussianBayes(bayesClassic):
         self.y_train = y
 
         #calculate probability of each y (P(y))
-        for y in self.y_train:
-            if (y not in self.y_value):
-                self.y_value.append(y)
+        print('Calculating labels\'s probability')
+        for y in range(self.y_train.shape[0]):
+            if (self.y_train[y] not in self.y_value):
+                self.y_value.append(self.y_train[y])
                 self.y_proba.append(0)
-            self.y_proba[self.y_value.index(y)] += 1
+            self.y_proba[self.y_value.index(self.y_train[y])] += 1
+            print('Process: %s' % (100*(y+1)/self.y_train.shape[0]))
         self.y_proba = [k / sum(self.y_proba) for k in self.y_proba]
         #calculate probability of each feature if each y (P((a-X) | y))
+        print('Calculating each feature\'s probability')
+        percent = 0
         for y in range(len(self.y_value)):
             self.X_mean.append([])
             self.X_stDev.append([])
@@ -110,6 +118,8 @@ class gaussianBayes(bayesClassic):
                 for X_h in range(self.X_train.shape[0]):
                     if (self.y_train[X_h] == self.y_value[y]):
                         self.X_trainEachY.append(self.X_train[X_h,X_v])
+                    percent += (100 / (len(self.y_value) * self.X_train.shape[-1] * self.X_train.shape[0]))
+                    print('Process: %s' % percent)
                 self.X_mean[y].append(mean(self.X_trainEachY))
                 self.X_stDev[y].append(standardDeviation(self.X_trainEachY))
 

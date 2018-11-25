@@ -37,7 +37,7 @@ model.compile(loss='categorical_crossentropy',
 model.fit(trainData, trainLabel, epochs=100, batch_size=100)
 a = []
 for X in testData:
-    classes = model.predict(X.reshape(-1,6))
+    classes = model.predict(X.reshape(-1,28,28))
     a.append(np.argmax(classes[0]))
 count = 0
 for i in range(len(a)):

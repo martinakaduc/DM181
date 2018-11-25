@@ -13,4 +13,4 @@ def loadMNIST( prefix):
 
 trainingImages, trainingLabels = loadMNIST( "train")
 testImages, testLabels = loadMNIST( "t10k")
-print(trainingImages.shape[0])
+print(testImages.shape[0])

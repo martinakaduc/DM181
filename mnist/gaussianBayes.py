@@ -14,9 +14,11 @@ def loadMNIST( prefix):
 
 trainData, trainLabel = loadMNIST( "train")
 testData, testLabel = loadMNIST( "t10k")
-clf = gaussianBayes()
-clf.fit(trainData, trainLabel)
-print('Score mycode: ' + str(clf.score(testData, testLabel)))
+trainData = np.array([x.flatten() for x in trainData])
+testData = np.array([x.flatten() for x in testData])
+# clf = gaussianBayes()
+# clf.fit(trainData, trainLabel)
+# print('Score mycode: ' + str(clf.score(testData, testLabel)))
 
 from sklearn.naive_bayes import GaussianNB
 clf = GaussianNB()
