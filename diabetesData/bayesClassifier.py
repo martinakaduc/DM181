@@ -59,7 +59,7 @@ class bayesClassic(object):
         return (self.y_value[np.argmax(self.y_predict)])
 
     def predictProbability(self):
-        return (self.y_predict[np.argmax(self.y_predict)])
+        return (self.y_predict[np.argmax(self.y_predict)]/sum(self.y_predict))
 
     def score(self, X, y):
         self.X_test = X
