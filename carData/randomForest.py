@@ -27,6 +27,7 @@ clf = RandomForestClassifier(n_estimators = 100)
 clf.fit(trainData, trainLabel)
 print('Score: ' + str(clf.score(testData, testLabel)))
 # print('Predict: ' + str(clf.predict(testData)))
+# from bayesClassifier import *
 # saveModel(clf, 'model.sav') #save model for future use
 # loaded_model = loadModel('model.sav') #load model from file
 # print(loaded_model.predict(testData)) #try to predict using loaded_model

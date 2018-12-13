@@ -137,3 +137,40 @@ class gaussianBayes(bayesClassic):
                     else:
                         self.y_predict[y] *= 0
         return (self.y_value[np.argmax(self.y_predict)])
+
+class multinomialBayes(bayesClassic):
+    def fit(self, X, y):
+        self.X_train = np.array([x.flatten() for x in X])
+        self.y_train = y
+        self.sample_size = self.X_train.shape[-1] #equivalent sample size (column:-1, row:0)
+
+        #calculate probability of each y (P(y))
+        print('Calculating labels\'s probability')
+        for y in range(self.y_train.shape[0]):
+            if (self.y_train[y] not in self.y_value):
+                self.y_value.append(self.y_train[y])
+                self.y_proba.append(0)
+            self.y_proba[self.y_value.index(self.y_train[y])] += 1
+            print('Process: %s' % (100*(y+1)/self.y_train.shape[0]))
+        self.y_proba = [k / sum(self.y_proba) for k in self.y_proba]
+
+        #calculate probability of each feature if each y (P((a-X) | y))
+        print('Calculating each feature\'s probability')
+        percent = 0
+        for y in range(len(self.y_value)):
+            self.X_proba.append([])
+            for X_v in range(self.sample_size):
+                self.X_valueEachFeature = []
+                self.X_count = []
+                for X_h in range(self.X_train.shape[0]):
+                    if (self.X_train[X_h,X_v] not in self.X_valueEachFeature):
+                        self.X_valueEachFeature.append(self.X_train[X_h,X_v])
+                        self.X_count.append(0)
+                    if (self.y_train[X_h] == self.y_value[y]):
+                        self.X_count[self.X_valueEachFeature.index(self.X_train[X_h,X_v])] += 1
+                    percent += (100 / (len(self.y_value) * self.sample_size * self.X_train.shape[0]))
+                    print('Process: %s' % percent)
+                self.X_proba[y].append([(X + self.fit_prior) / (self.fit_prior*self.sample_size + self.y_proba[y]*self.y_train.shape[-1])
+                                for X in self.X_count])
+                if (y == 0):
+                    self.X_value.append(self.X_valueEachFeature)
