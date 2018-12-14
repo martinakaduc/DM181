@@ -127,10 +127,10 @@ class gaussianBayes(bayesClassic):
         self.X_predict = X_predict.flatten()
         self.y_predict = []
         for y in range(len(self.y_value)):
-            self.y_predict.append(self.y_proba[y])
+            self.y_predict.append(np.log10(self.y_proba[y]))
             for X in range(self.X_predict.shape[-1]):
                 if (self.X_stDev[y][X] != 0):
-                    self.y_predict[y] *= (np.exp(-(self.X_predict[X] - self.X_mean[y][X])**2 / (2*self.X_stDev[y][X]**2)) / (np.sqrt(2*np.pi)*self.X_stDev[y][X]))
+                    self.y_predict[y] += np.log10(np.exp(-(self.X_predict[X] - self.X_mean[y][X])**2 / (2*self.X_stDev[y][X]**2)) / (np.sqrt(2*np.pi)*self.X_stDev[y][X]))
                 else:
                     if ((self.X_predict[X] - self.X_mean[y][X]) == 0):
                         self.y_predict[y] *= self.X_train.shape[0]

@@ -21,6 +21,11 @@ clf = gaussianBayes()
 clf.fit(trainData, trainLabel)
 print('Predict: ' + str(clf.predict(testData)))
 print('Predict Probability: ' + str(clf.predictProbability()))
+from sklearn.naive_bayes import GaussianNB
+clf = GaussianNB()
+clf.fit(trainData, trainLabel)
+print('Predict: ' + str(clf.predict(testData)))
+print('Predict Probability: ' + str(clf.predict_proba(testData)))
 # saveModel(clf, 'model.sav') #save model for future use
 # loaded_model = loadModel('model.sav') #load model from file
 # print(loaded_model.predict(testData)) #try to predict using loaded_model
