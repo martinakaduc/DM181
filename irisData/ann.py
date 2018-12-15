@@ -6,7 +6,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout
 
 data = []
-with open('iris_shuffled.csv', 'r') as csvfile:
+with open('iris_shuffled.csv', 'rt') as csvfile:
     csvObj = csv.reader(csvfile, delimiter=',')
     for row in csvObj:
         for i in range(len(row)):
