@@ -2,7 +2,7 @@ import numpy as np
 import csv
 from bayesClassifier import *
 data = []
-with open('iris_shuffled.csv', 'rb') as csvfile:
+with open('iris_shuffled.csv', 'rt') as csvfile:
     csvObj = csv.reader(csvfile, delimiter=',')
     for row in csvObj:
         data.append(row)

@@ -2,7 +2,7 @@ import numpy as np
 import csv
 from bayesClassifier import *
 data = []
-with open('car.csv', 'rb') as csvfile:
+with open('car.csv', 'rt') as csvfile:
     csvObj = csv.reader(csvfile, delimiter=',')
     for row in csvObj:
         # Normalize data

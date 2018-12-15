@@ -6,7 +6,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout
 
 data = []
-with open('car.csv', 'rb') as csvfile:
+with open('car.csv', 'rt') as csvfile:
     csvObj = csv.reader(csvfile, delimiter=',')
     for row in csvObj:
         for i in range(len(row)):

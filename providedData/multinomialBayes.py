@@ -3,7 +3,7 @@ import csv
 # from sklearn.ensemble import RandomForestClassifier
 from bayesClassifier import *
 data = []
-with open('bayesData.csv', 'rb') as csvfile:
+with open('bayesData.csv', 'rt') as csvfile:
     csvObj = csv.reader(csvfile, delimiter=',')
     for row in csvObj:
         data.append(row)
