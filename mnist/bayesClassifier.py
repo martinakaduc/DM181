@@ -56,7 +56,6 @@ class bayesClassic(object):
             self.X_proba.append([])
             numberOfY = self.y_proba[y]*self.y_train.shape[-1]
             for f in range(len(self.X_value)):
-                print(f)
                 self.X_proba[y].append([])
                 for x in range(len(self.X_value[f])):
                     self.X_proba[y][f].append((np.count_nonzero(np.logical_and(self.X_train[:,f] == self.X_value[f][x], self.y_train == self.y_value[y])) + self.fit_prior*self.sample_size) /
@@ -114,17 +113,16 @@ class gaussianBayes(bayesClassic):
 
         #calculate probability of each y (P(y))
         print('Calculating labels\'s probability')
-        # for y in range(self.y_train.shape[0]):
-        #     if (self.y_train[y] not in self.y_value):
-        #         self.y_value.append(self.y_train[y])
-        #         self.y_proba.append(0)
-        #     self.y_proba[self.y_value.index(self.y_train[y])] += 1
-        #     print('Process: %s' % (100*(y+1)/self.y_train.shape[0]))
-        self.y_value, self.y_proba = np.unique(self.y_train, return_counts=True)
+        for y in range(self.y_train.shape[0]):
+            if (self.y_train[y] not in self.y_value):
+                self.y_value.append(self.y_train[y])
+                self.y_proba.append(0)
+            self.y_proba[self.y_value.index(self.y_train[y])] += 1
+            # print('Process: %s' % (100*(y+1)/self.y_train.shape[0]))
         self.y_proba = [k / sum(self.y_proba) for k in self.y_proba]
         #calculate probability of each feature if each y (P((a-X) | y))
         print('Calculating each feature\'s probability')
-        percent = 0
+        # percent = 0
         for y in range(len(self.y_value)):
             self.X_mean.append([])
             self.X_stDev.append([])
@@ -133,8 +131,8 @@ class gaussianBayes(bayesClassic):
                 for X_h in range(self.X_train.shape[0]):
                     if (self.y_train[X_h] == self.y_value[y]):
                         self.X_trainEachY.append(self.X_train[X_h,X_v])
-                    percent += (100 / (len(self.y_value) * self.X_train.shape[-1] * self.X_train.shape[0]))
-                    print('Process: %s' % percent)
+                    # percent += (100 / (len(self.y_value) * self.X_train.shape[-1] * self.X_train.shape[0]))
+                    # print('Process: %s' % percent)
                 self.X_mean[y].append(mean(self.X_trainEachY))
                 self.X_stDev[y].append(standardDeviation(self.X_trainEachY))
 
@@ -148,9 +146,9 @@ class gaussianBayes(bayesClassic):
                     self.y_predict[y] += np.log10(np.exp(-(self.X_predict[X] - self.X_mean[y][X])**2 / (2*self.X_stDev[y][X]**2)) / (np.sqrt(2*np.pi)*self.X_stDev[y][X]))
                 else:
                     if ((self.X_predict[X] - self.X_mean[y][X]) == 0):
-                        self.y_predict[y] *= self.X_train.shape[0]
+                        self.y_predict[y] += 0
                     else:
-                        self.y_predict[y] *= 0
+                        self.y_predict[y] += -1
         return (self.y_value[np.argmax(self.y_predict)])
 
 class multinomialBayes(bayesClassic):

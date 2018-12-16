@@ -42,7 +42,7 @@ model.add(Dense(4, activation='softmax'))
 model.compile(loss='categorical_crossentropy',
               optimizer='sgd',
               metrics=['accuracy'])
-model.fit(trainData, trainLabel, epochs=1000, batch_size=100)
+model.fit(trainData, trainLabel, epochs=1000, batch_size=50)
 a = []
 for X in testData:
     classes = model.predict(X.reshape(-1,6))
