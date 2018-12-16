@@ -7,9 +7,9 @@ with open('diabetes.csv', 'rt') as csvfile:
     for row in csvObj:
         data.append(row)
 data = np.array(data)
-trainData = data[:600, :8]
+trainData = data[:600, :8].astype(np.float)
 trainLabel = data[:600, 8]
-testData = data[600:, :8]
+testData = data[600:, :8].astype(np.float)
 testLabel = data[600:, 8]
 clf = multinomialBayes(fit_prior = 0.5)
 clf.fit(trainData, trainLabel)

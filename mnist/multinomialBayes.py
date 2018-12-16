@@ -14,9 +14,16 @@ def loadMNIST( prefix):
 
 trainData, trainLabel = loadMNIST( "train")
 testData, testLabel = loadMNIST( "t10k")
-clf = multinomialBayes(fit_prior = 0.5)
+trainData = np.array([x.flatten() for x in trainData])
+testData = np.array([x.flatten() for x in testData])
+# clf = multinomialBayes(fit_prior = 1)
+# clf.fit(trainData, trainLabel)
+# print('Score: ' + str(clf.score(testData, testLabel)))
+
+from sklearn.naive_bayes import MultinomialNB
+clf = MultinomialNB()
 clf.fit(trainData, trainLabel)
-print('Score: ' + str(clf.score(testData, testLabel)))
+print('Score sklearn: ' + str(clf.score(testData, testLabel)))
 # print('Predict: ' + str(clf.predict(testData)))
 # print('Predict Probability: ' + str(clf.predictProbability()))
 # saveModel(clf, 'model.sav') #save model for future use

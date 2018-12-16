@@ -19,34 +19,48 @@ class bayesClassic(object):
 
         #calculate probability of each y (P(y))
         print('Calculating labels\'s probability')
-        for y in range(self.y_train.shape[0]):
-            if (self.y_train[y] not in self.y_value):
-                self.y_value.append(self.y_train[y])
-                self.y_proba.append(0)
-            self.y_proba[self.y_value.index(self.y_train[y])] += 1
-            print('Process: %s' % (100*(y+1)/self.y_train.shape[0]))
+        # for y in range(self.y_train.shape[0]):
+        #     if (self.y_train[y] not in self.y_value):
+        #         self.y_value.append(self.y_train[y])
+        #         self.y_proba.append(0)
+        #     self.y_proba[self.y_value.index(self.y_train[y])] += 1
+        #     print('Process: %s' % (100*(y+1)/self.y_train.shape[0]))
+
+        self.y_value, self.y_proba = np.unique(self.y_train, return_counts=True)
         self.y_proba = [k / sum(self.y_proba) for k in self.y_proba]
 
         #calculate probability of each feature if each y (P((a-X) | y))
         print('Calculating each feature\'s probability')
-        percent = 0
+        # percent = 0
+        # for y in range(len(self.y_value)):
+        #     self.X_proba.append([])
+        #     for X_v in range(self.sample_size):
+        #         self.X_valueEachFeature = []
+        #         self.X_count = []
+        #         for X_h in range(self.X_train.shape[0]):
+        #             if (self.X_train[X_h,X_v] not in self.X_valueEachFeature):
+        #                 self.X_valueEachFeature.append(self.X_train[X_h,X_v])
+        #                 self.X_count.append(0)
+        #             if (self.y_train[X_h] == self.y_value[y]):
+        #                 self.X_count[self.X_valueEachFeature.index(self.X_train[X_h,X_v])] += 1
+        #             percent += (100 / (len(self.y_value) * self.sample_size * self.X_train.shape[0]))
+        #             print('Process: %s' % percent)
+        #         self.X_proba[y].append([(X + self.fit_prior*self.sample_size) / (self.sample_size + self.y_proba[y]*self.y_train.shape[-1])
+        #                         for X in self.X_count])
+        #         if (y == 0):
+        #             self.X_value.append(self.X_valueEachFeature)
+
+        for X_v in range(self.sample_size):
+            self.X_value.append(np.unique(self.X_train[:,X_v]).tolist())
         for y in range(len(self.y_value)):
             self.X_proba.append([])
-            for X_v in range(self.sample_size):
-                self.X_valueEachFeature = []
-                self.X_count = []
-                for X_h in range(self.X_train.shape[0]):
-                    if (self.X_train[X_h,X_v] not in self.X_valueEachFeature):
-                        self.X_valueEachFeature.append(self.X_train[X_h,X_v])
-                        self.X_count.append(0)
-                    if (self.y_train[X_h] == self.y_value[y]):
-                        self.X_count[self.X_valueEachFeature.index(self.X_train[X_h,X_v])] += 1
-                    percent += (100 / (len(self.y_value) * self.sample_size * self.X_train.shape[0]))
-                    print('Process: %s' % percent)
-                self.X_proba[y].append([(X + self.fit_prior*self.sample_size) / (self.sample_size + self.y_proba[y]*self.y_train.shape[-1])
-                                for X in self.X_count])
-                if (y == 0):
-                    self.X_value.append(self.X_valueEachFeature)
+            numberOfY = self.y_proba[y]*self.y_train.shape[-1]
+            for f in range(len(self.X_value)):
+                print(f)
+                self.X_proba[y].append([])
+                for x in range(len(self.X_value[f])):
+                    self.X_proba[y][f].append((np.count_nonzero(np.logical_and(self.X_train[:,f] == self.X_value[f][x], self.y_train == self.y_value[y])) + self.fit_prior*self.sample_size) /
+                                                (self.sample_size + numberOfY))
 
     def predict(self, X_predict):
         self.X_predict = X_predict.flatten()
@@ -100,12 +114,13 @@ class gaussianBayes(bayesClassic):
 
         #calculate probability of each y (P(y))
         print('Calculating labels\'s probability')
-        for y in range(self.y_train.shape[0]):
-            if (self.y_train[y] not in self.y_value):
-                self.y_value.append(self.y_train[y])
-                self.y_proba.append(0)
-            self.y_proba[self.y_value.index(self.y_train[y])] += 1
-            print('Process: %s' % (100*(y+1)/self.y_train.shape[0]))
+        # for y in range(self.y_train.shape[0]):
+        #     if (self.y_train[y] not in self.y_value):
+        #         self.y_value.append(self.y_train[y])
+        #         self.y_proba.append(0)
+        #     self.y_proba[self.y_value.index(self.y_train[y])] += 1
+        #     print('Process: %s' % (100*(y+1)/self.y_train.shape[0]))
+        self.y_value, self.y_proba = np.unique(self.y_train, return_counts=True)
         self.y_proba = [k / sum(self.y_proba) for k in self.y_proba]
         #calculate probability of each feature if each y (P((a-X) | y))
         print('Calculating each feature\'s probability')
@@ -146,31 +161,43 @@ class multinomialBayes(bayesClassic):
 
         #calculate probability of each y (P(y))
         print('Calculating labels\'s probability')
-        for y in range(self.y_train.shape[0]):
-            if (self.y_train[y] not in self.y_value):
-                self.y_value.append(self.y_train[y])
-                self.y_proba.append(0)
-            self.y_proba[self.y_value.index(self.y_train[y])] += 1
-            print('Process: %s' % (100*(y+1)/self.y_train.shape[0]))
+        # for y in range(self.y_train.shape[0]):
+        #     if (self.y_train[y] not in self.y_value):
+        #         self.y_value.append(self.y_train[y])
+        #         self.y_proba.append(0)
+        #     self.y_proba[self.y_value.index(self.y_train[y])] += 1
+        #     print('Process: %s' % (100*(y+1)/self.y_train.shape[0]))
+        self.y_value, self.y_proba = np.unique(self.y_train, return_counts=True)
         self.y_proba = [k / sum(self.y_proba) for k in self.y_proba]
 
         #calculate probability of each feature if each y (P((a-X) | y))
         print('Calculating each feature\'s probability')
-        percent = 0
+        # percent = 0
+        # for y in range(len(self.y_value)):
+        #     self.X_proba.append([])
+        #     for X_v in range(self.sample_size):
+        #         self.X_valueEachFeature = []
+        #         self.X_count = []
+        #         for X_h in range(self.X_train.shape[0]):
+        #             if (self.X_train[X_h,X_v] not in self.X_valueEachFeature):
+        #                 self.X_valueEachFeature.append(self.X_train[X_h,X_v])
+        #                 self.X_count.append(0)
+        #             if (self.y_train[X_h] == self.y_value[y]):
+        #                 self.X_count[self.X_valueEachFeature.index(self.X_train[X_h,X_v])] += 1
+        #             percent += (100 / (len(self.y_value) * self.sample_size * self.X_train.shape[0]))
+        #             print('Process: %s' % percent)
+        #         self.X_proba[y].append([(X + self.fit_prior) / (self.fit_prior*self.sample_size + self.y_proba[y]*self.y_train.shape[-1])
+        #                         for X in self.X_count])
+        #         if (y == 0):
+        #             self.X_value.append(self.X_valueEachFeature)
+
+        for X_v in range(self.sample_size):
+            self.X_value.append(np.unique(self.X_train[:,X_v]).tolist())
         for y in range(len(self.y_value)):
             self.X_proba.append([])
-            for X_v in range(self.sample_size):
-                self.X_valueEachFeature = []
-                self.X_count = []
-                for X_h in range(self.X_train.shape[0]):
-                    if (self.X_train[X_h,X_v] not in self.X_valueEachFeature):
-                        self.X_valueEachFeature.append(self.X_train[X_h,X_v])
-                        self.X_count.append(0)
-                    if (self.y_train[X_h] == self.y_value[y]):
-                        self.X_count[self.X_valueEachFeature.index(self.X_train[X_h,X_v])] += 1
-                    percent += (100 / (len(self.y_value) * self.sample_size * self.X_train.shape[0]))
-                    print('Process: %s' % percent)
-                self.X_proba[y].append([(X + self.fit_prior) / (self.fit_prior*self.sample_size + self.y_proba[y]*self.y_train.shape[-1])
-                                for X in self.X_count])
-                if (y == 0):
-                    self.X_value.append(self.X_valueEachFeature)
+            numberOfY = self.y_proba[y]*self.y_train.shape[-1]
+            for f in range(len(self.X_value)):
+                self.X_proba[y].append([])
+                for x in range(len(self.X_value[f])):
+                    self.X_proba[y][f].append((np.count_nonzero(np.logical_and(self.X_train[:,f] == self.X_value[f][x], self.y_train == self.y_value[y])) + self.fit_prior) /
+                                                (self.fit_prior * self.sample_size + numberOfY))

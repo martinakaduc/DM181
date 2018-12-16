@@ -8,7 +8,6 @@ with open('car.csv', 'rt') as csvfile:
     for row in csvObj:
         data.append(row)
 data = np.array(data)
-print(data)
 trainData = data[:1600, :6]
 trainLabel = data[:1600, 6]
 testData = data[1600:, :6]
